@@ -1,11 +1,9 @@
-import Header from '@/components/Header'
 import React from 'react'
 
 const Containers = () => {
   return (
     <>
-        <Header/>
-        <div>Containers</div>
+        <main className="flex min-h-screen flex-col items-center justify-between p-24">Containers</main>
     </>
 
   )

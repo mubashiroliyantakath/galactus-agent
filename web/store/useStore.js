@@ -14,4 +14,4 @@ const useStore = (
   return data
 }
 
-export default useStore
+export default useStore;

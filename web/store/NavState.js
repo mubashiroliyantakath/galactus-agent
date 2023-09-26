@@ -6,6 +6,7 @@ const navState = create(
       (set, get) => ({
         active: "overview-nav",
         setActiveTab: (id) => set(() => ({ active: id })),
+        resetTab: () => set(() => ({ active: "overview-nav" }) )
       }),
       {
         name: 'nav-state-storage', // name of the item in the storage (must be unique)
