@@ -32,7 +32,7 @@ func main() {
 	signal.Notify(c, os.Interrupt)
 	app = fiber.New()
 	app.Get("/api/v1/containers/list", controllers.ContainerController)
-
+	app.Get("/api/v1/images/list", controllers.ImageController)
 	go func() {
 		<-c
 		logging.Log.Info("Received Ctrl + C. Gracefully shutting down the server.")
