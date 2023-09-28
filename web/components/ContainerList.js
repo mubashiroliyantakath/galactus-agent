@@ -1,7 +1,3 @@
-
-
-
-import ContainerItem from "./ContainerItem"
 import {
     Table,
     TableBody,
@@ -13,7 +9,7 @@ import {
 } from "@/components/ui/table"
 
 async function getContainers(){
-    'use server'
+
     const containerList = await fetch(`http://127.0.0.1:7867/api/v1/containers/list`, {
         next: {
             revalidate: 30
@@ -30,7 +26,7 @@ async function ContainerList () {
     const containers = await getContainers()
   return (
     <Table>
-        <TableCaption>A list of containers running on the host</TableCaption>
+        <TableCaption>A list of containers running on the host.</TableCaption>
         <TableHeader>
             <TableRow>
                 <TableHead className="w-[100px]">Id</TableHead>
@@ -50,11 +46,6 @@ async function ContainerList () {
             )}
         </TableBody>
     </Table>
-    // <div>
-    //     {containers.map((container,index) =>
-    //         <ContainerItem key={index} item={container}/>
-    //     )}
-    // </div>
   )
 }
 
