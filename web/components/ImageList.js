@@ -56,7 +56,7 @@ function ImageList() {
             <TableCell className='font-medium'>{image.RepoTags[0].split(":")[0]}</TableCell>
             <TableCell>{image.RepoTags[0].split(":")[1]}</TableCell>
             <TableCell>
-            <Button variant="danger" size="icon"><TrashIcon className="w-4 h-4"/></Button>
+            <Button variant="ghost" size="icon"><TrashIcon className="w-4 h-4 hover:text-red-500"/></Button>
             </TableCell>
         </TableRow>
         )}
