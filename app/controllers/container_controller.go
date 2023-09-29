@@ -15,7 +15,7 @@ func ContainerController(c *fiber.Ctx) error {
 		logging.Log.Info("Error creating docker client")
 		return fiber.ErrInternalServerError
 	}
-	containers, err := dockerClient.ContainerList(context.Background(), types.ContainerListOptions{})
+	containers, err := dockerClient.ContainerList(context.Background(), types.ContainerListOptions{All: true})
 	if err != nil {
 		return fiber.ErrInternalServerError
 	}

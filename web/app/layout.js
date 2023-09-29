@@ -1,8 +1,7 @@
 import './globals.css'
-import { Inter } from 'next/font/google'
+import { JetBrains_Mono } from 'next/font/google'
 
-const inter = Inter({ subsets: ['latin'] })
-
+const jetbrains = JetBrains_Mono({subsets: ['latin']})
 export const metadata = {
   title: 'Galactus Agent Dashboard',
   description: 'Dashboard on the target device',
@@ -11,7 +10,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={jetbrains.className}>
         {children}
       </body>
     </html>
