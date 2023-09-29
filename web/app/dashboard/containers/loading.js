@@ -5,7 +5,6 @@ export default function Loading() {
     // You can add any UI inside Loading, including a Skeleton.
     // return <Skeleton className="w-[100px] h-[20px] rounded-full" />
     return (
-      <main className="flex flex-col items-center justify-between px-10">
       <Table>
         <TableCaption>A list of containers running on the host.</TableCaption>
         <TableHeader>
@@ -23,6 +22,6 @@ export default function Loading() {
             </TableRow>
         </TableHeader>
       </Table>
-      </main>
+
     )
   }

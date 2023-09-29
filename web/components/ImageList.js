@@ -1,3 +1,4 @@
+"use client"
 import {
     Table,
     TableBody,
@@ -7,24 +8,35 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { Skeleton } from "./ui/skeleton";
+import { useEffect,useState } from "react";
+import Loading from "@/app/dashboard/images/loading";
+import { Button } from "./ui/button";
+import { TrashIcon, ValueNoneIcon } from "@radix-ui/react-icons";
+import { Alert, AlertDescription, AlertTitle } from "./ui/alert"
+function ImageList() {
+    const [imageList, setImageList] = useState(null)
+    const [isLoading, setIsLoading] = useState(true)
 
-async function getContainers(){
+    useEffect(() => {
+      setIsLoading(true)
+      fetch('/api/images/list')
+          .then((res) => res.json())
+          .then((imageList) => {
+              setImageList(imageList)
+              setIsLoading(false)
+          }).catch((error) =>  {
+            throw new Error(error)
+        }).finally(() => {
+            setIsLoading(false)
+        })
+    }, [])
 
-    const imageList = await fetch(`http://127.0.0.1:7867/api/v1/images/list`, {
-        next: {
-            revalidate: 30
-        }
-    })
-    if (!imageList.ok){
-      throw new Error('Failed to fetch data')
-    }
-    return imageList.json()
-}
-
-async function ImageList() {
-    const images = await getContainers();
+    if (isLoading) {
+      return <Loading/>
+    } else
     return (
+        <>
+        { imageList.length != 0 ?
         <Table>
         <TableCaption>A list of images avaialble locally on the host.</TableCaption>
         <TableHeader>
@@ -32,18 +44,33 @@ async function ImageList() {
                 <TableHead className="w-[100px]">Id</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Version</TableHead>
+                <TableHead>Actions</TableHead>
             </TableRow>
         </TableHeader>
+
         <TableBody>
-            {images.map((image,index) =>
-            <TableRow key={index}>
-                <TableCell>{image.Id.split(":")[1].substring(0,12)}</TableCell>
-                <TableCell className='font-medium'>{image.RepoTags[0].split(":")[0]}</TableCell>
-                <TableCell>{image.RepoTags[0].split(":")[1]}</TableCell>
-            </TableRow>
-            )}
+        {imageList.map((image) =>
+        <TableRow key={image.Id.split(":")[1].substring(0,12)}>
+            <TableCell>{image.Id.split(":")[1].substring(0,12)}</TableCell>
+            <TableCell className='font-medium'>{image.RepoTags[0].split(":")[0]}</TableCell>
+            <TableCell>{image.RepoTags[0].split(":")[1]}</TableCell>
+            <TableCell>
+            <Button variant="danger" size="icon"><TrashIcon className="w-4 h-4"/></Button>
+            </TableCell>
+        </TableRow>
+        )}
         </TableBody>
-    </Table>
+        </Table>
+        :
+        <Alert className="w-1/2 mt-44 border-blue-500" >
+            <ValueNoneIcon className="h-4 w-4"/>
+            <AlertTitle>No Images Available!</AlertTitle>
+            <AlertDescription>
+                There are no images available.
+            </AlertDescription>
+        </Alert>
+        }
+        </>
     )
 }
 
