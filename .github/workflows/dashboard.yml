@@ -34,6 +34,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          context: ./web/.
+          context: "{{defaultContext}}:web"
           platforms: ${{ matrix.platform }}
           tags: mubashiro/galactus-agent-dashboard:latest
