@@ -1,11 +1,21 @@
 
 name: agent
-run-name: Building Galactus Agent Docker Image nad Pusing it to DockerHub
+run-name: Building Galactus Agent Docker Image and Pushing it to DockerHub
 
-on: [push]
+on:
+  push:
+    paths:
+      - "**"
+      - '!web/**'
 jobs:
   build-agent-image:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+          platform:
+              - linux/amd64
+              - linux/arm64
     steps:
       -
         name: Set up QEMU
@@ -24,4 +34,5 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
+          platforms: ${{ matrix.platform }}
           tags: mubashiro/galactus-agent:latest
