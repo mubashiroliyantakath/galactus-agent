@@ -23,7 +23,5 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: ./agent.Dockerfile
           push: true
           tags: mubashiro/galactus-agent:latest
