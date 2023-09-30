@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+import error from "@/app/dashboard/error";
 import { NextResponse } from "next/server";
 
 export async function GET(request) {
