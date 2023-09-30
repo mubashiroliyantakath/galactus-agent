@@ -53,10 +53,10 @@ function ImageList() {
         {imageList.map((image) =>
         <TableRow key={image.Id.split(":")[1].substring(0,12)}>
             <TableCell>{image.Id.split(":")[1].substring(0,12)}</TableCell>
-            <TableCell className='font-medium'>{image.RepoTags[0].split(":")[0]}</TableCell>
-            <TableCell>{image.RepoTags[0].split(":")[1]}</TableCell>
+            <TableCell className='font-medium'>{image.RepoTags.length ==0 ? "<none>" : image.RepoTags[0].split(":")[0]}</TableCell>
+            <TableCell>{image.RepoTags.length ==0 ? "<none>" : image.RepoTags[0].split(":")[1]}</TableCell>
             <TableCell>
-            <Button variant="danger" size="icon"><TrashIcon className="w-4 h-4"/></Button>
+            <Button variant="ghost" size="icon"><TrashIcon className="w-4 h-4 hover:text-red-500"/></Button>
             </TableCell>
         </TableRow>
         )}

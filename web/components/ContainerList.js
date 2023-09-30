@@ -60,8 +60,8 @@ function ContainerList () {
             <TableCell>{container.Image}</TableCell>
             <TableCell>{container.Status}</TableCell>
             <TableCell>
-                {container.State === "running" ? <Button variant="danger" size="icon"><StopIcon className="h-4 w-4 text-red-900"/></Button> : <Button variant="good" size="icon"><PlayIcon className="h-4 w-4 text-green-800"/></Button>}
-                <Button variant="ghost" size="icon"><TrashIcon className="w-4 h-4"/></Button>
+                {container.State === "running" ? <Button variant="danger" size="icon"><StopIcon className="h-4 w-4"/></Button> : <Button variant="good" size="icon"><PlayIcon className="h-4 w-4"/></Button>}
+                <Button variant="ghost" size="icon"><TrashIcon className="w-4 h-4 hover:text-red-500"/></Button>
             </TableCell>
         </TableRow>
         )}
