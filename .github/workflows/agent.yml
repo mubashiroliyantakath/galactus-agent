@@ -6,6 +6,7 @@ on:
   push:
     paths:
       - "**"
+      - '!.github/workflows/dashboard.yml'
       - '!web/**'
 jobs:
   build-agent-image:
