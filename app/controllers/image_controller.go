@@ -15,7 +15,7 @@ func ImageController(c *fiber.Ctx) error {
 		logging.Log.Info("Error creating docker client")
 		return fiber.ErrInternalServerError
 	}
-	images, err := dockerClient.ImageList(context.Background(), types.ImageListOptions{ContainerCount: true})
+	images, err := dockerClient.ImageList(context.Background(), types.ImageListOptions{All: true})
 	if err != nil {
 		return fiber.ErrInternalServerError
 	}
