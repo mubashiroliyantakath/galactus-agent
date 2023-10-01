@@ -8,6 +8,7 @@ on:
       - "**"
       - '!.github/workflows/dashboard.yml'
       - '!web/**'
+      - '!README.md'
 jobs:
   build-agent-image:
     runs-on: ubuntu-latest
