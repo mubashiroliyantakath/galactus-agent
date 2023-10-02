@@ -13,6 +13,32 @@ import Loading from "@/app/dashboard/images/loading";
 import { Button } from "./ui/button";
 import { TrashIcon, ValueNoneIcon } from "@radix-ui/react-icons";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert"
+
+function transformImageList(imageList) {
+    const transformedImageList = []
+    imageList.forEach(item => {
+        if (item.RepoTags.length === 0) {
+            transformedImageList.push({
+                ...item,
+                name: "<none>",
+                version: "<none>"
+            })
+        } else {
+            item.RepoTags.forEach(repoTag => {
+                const version = repoTag.split(":").slice(-1)[0]
+                const name = repoTag.split(":").slice(0,-1).join(":")
+                transformedImageList.push({
+                    ...item,
+                    name: name,
+                    version: version
+                });
+            })
+        }
+
+    });
+    return transformedImageList
+}
+
 function ImageList() {
     const [imageList, setImageList] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
@@ -22,7 +48,7 @@ function ImageList() {
       fetch('/api/images/list')
           .then((res) => res.json())
           .then((imageList) => {
-              setImageList(imageList)
+              setImageList(transformImageList(imageList))
               setIsLoading(false)
           }).catch((error) =>  {
             throw new Error(error)
@@ -50,11 +76,11 @@ function ImageList() {
         </TableHeader>
 
         <TableBody>
-        {imageList.map((image) =>
-        <TableRow key={image.Id.split(":")[1].substring(0,12)}>
+        {imageList.map((image, index) =>
+        <TableRow key={index}>
             <TableCell>{image.Id.split(":")[1].substring(0,12)}</TableCell>
-            <TableCell className='font-medium'>{image.RepoTags.length ==0 ? "<none>" : image.RepoTags[0].split(":")[0]}</TableCell>
-            <TableCell>{image.RepoTags.length ==0 ? "<none>" : image.RepoTags[0].split(":")[1]}</TableCell>
+            <TableCell className='font-medium'>{image.name}</TableCell>
+            <TableCell>{image.version}</TableCell>
             <TableCell>
             <Button variant="ghost" size="icon"><TrashIcon className="w-4 h-4 hover:text-red-500"/></Button>
             </TableCell>
