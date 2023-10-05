@@ -7,6 +7,6 @@ var (
 )
 
 func NewLogger() {
-	Log, _ = zap.NewDevelopment()
+	Log, _ = zap.NewProduction()
 	defer Log.Sync()
 }
