@@ -1,6 +1,6 @@
 import './globals.css'
 import { JetBrains_Mono } from 'next/font/google'
-
+import { Toaster } from '@/components/ui/toaster'
 const jetbrains = JetBrains_Mono({subsets: ['latin']})
 export const metadata = {
   title: 'Galactus Agent Dashboard',
@@ -12,6 +12,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={jetbrains.className}>
         {children}
+        <Toaster/>
       </body>
     </html>
   )
