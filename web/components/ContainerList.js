@@ -13,13 +13,77 @@ import Loading from "@/app/dashboard/containers/loading"
 import { StopIcon, PlayIcon, TrashIcon, ValueNoneIcon } from "@radix-ui/react-icons"
 import { Button } from "./ui/button"
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert"
-
+import { useToast } from "./ui/use-toast"
+import error from "@/app/dashboard/error"
 
 // Renders a list of containers in table format
 function ContainerList () {
 
   const [containerList, setContainerList] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
+  const { toast } = useToast()
+
+  const containerAction = (id, name, action) => {
+
+    toast({
+        variant: `${action === "DELETE" ? "destructive" : "default"}`,
+        title: `Operation on container ${name}`,
+        description: `Scheduled the action: ${action}`
+    })
+
+    const payload = {
+        id: id,
+        action: action
+    }
+
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    }
+
+    fetch('/api/containers/action', requestOptions)
+        .then(response => {
+            if (!response.ok) {
+                toast({
+                    variant: "destructive",
+                    title: `Operation on container failed.`,
+                    description: `There was a problem with the request.`
+                })
+                return
+            }
+            toast({
+                variant: "good",
+                title: `Operation on container successful`
+            })
+            setIsLoading(true)
+            fetch('/api/containers/list')
+                .then((res) => res.json())
+                .then((containerList) => {
+                    setContainerList(containerList)
+                    setIsLoading(false)
+                }).catch((error) =>  {
+                    throw new Error(error)
+                }).finally(() => {
+                    setIsLoading(false)
+                })
+
+        })
+        .catch(error => {
+            console.log(error)
+            toast({
+                variant: "destructive",
+                title: `Operation on container failed.`,
+                description: `There was a problem with the request.`
+            })
+        })
+
+
+
+
+  }
 
   useEffect(() => {
     setIsLoading(true)
@@ -60,8 +124,8 @@ function ContainerList () {
             <TableCell>{container.Image}</TableCell>
             <TableCell>{container.Status}</TableCell>
             <TableCell>
-                {container.State === "running" ? <Button variant="danger" size="icon"><StopIcon className="h-4 w-4"/></Button> : <Button variant="good" size="icon"><PlayIcon className="h-4 w-4"/></Button>}
-                <Button variant="ghost" size="icon"><TrashIcon className="w-4 h-4 hover:text-red-500"/></Button>
+                {container.State === "running" ? <Button variant="danger" size="icon" onClick={(e) => containerAction(container.Id, container.Names[0].replace("/",""), "STOP")}><StopIcon className="h-4 w-4"/></Button> : <Button variant="good" size="icon" onClick={(e) => containerAction(container.Id, container.Names[0].replace("/",""), "START")}><PlayIcon className="h-4 w-4"/></Button>}
+                <Button variant="ghost" disabled={container.State != "running" ? false : true} onClick={(e) => containerAction(container.Id, container.Names[0].replace("/",""), "DELETE")} size="icon"><TrashIcon className="w-4 h-4 hover:text-red-500"/></Button>
             </TableCell>
         </TableRow>
         )}
