@@ -31,12 +31,16 @@ func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	app = fiber.New()
-	app.Get("/api/v1/containers/list", controllers.ContainerController)
-	app.Get("/api/v1/images/list", controllers.ImageController)
+	app.Get("/api/v1/containers/list", controllers.ContainerList)
+	app.Get("/api/v1/images/list", controllers.ImageList)
+	app.Post("/api/v1/containers/action", controllers.ContainerActions)
 	go func() {
 		<-c
 		logging.Log.Info("Received Ctrl + C. Gracefully shutting down the server.")
-		app.Shutdown()
+		err := app.Shutdown()
+		if err != nil {
+			return
+		}
 		os.Exit(0)
 	}()
 	err := app.Listen(fmt.Sprintf(":%d", config.AppConfig.Http.Port))
