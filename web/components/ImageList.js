@@ -13,6 +13,7 @@ import Loading from "@/app/dashboard/images/loading";
 import { Button } from "./ui/button";
 import { TrashIcon, ValueNoneIcon } from "@radix-ui/react-icons";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert"
+import {toast} from "sonner";
 
 function transformImageList(imageList) {
     const transformedImageList = []
@@ -43,6 +44,48 @@ function ImageList() {
     const [imageList, setImageList] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
 
+    const imageAction = (id, name, action) => {
+        toast.message('Container Action Scheduled', {
+            description: `${action} container ${name}`
+        })
+        const payload = {
+            id: id,
+            action: action
+        }
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        }
+        fetch('/api/images/action', requestOptions)
+            .then(response => {
+                if (!response.ok) {
+                    toast.error("There was an error with the request! Please check if the image is in use by a container.")
+                    return
+                }
+                toast.success(`${action} action on image "${name}" successful`)
+                fetch('/api/images/list')
+                    .then((res) => res.json())
+                    .then((imageList) => {
+                        setImageList(transformImageList(imageList))
+                    }).catch((error) =>  {
+                    throw new Error(error)
+                })
+
+            })
+            .catch(error => {
+                console.log(error)
+                toast.error(`There was a problem with the request!`)
+            })
+    }
+
+
+
+
+
+
     useEffect(() => {
       setIsLoading(true)
       fetch('/api/images/list')
@@ -63,9 +106,9 @@ function ImageList() {
     return (
         <>
 
-        { imageList.length != 0 ?
+        { imageList.length !== 0 ?
         <Table>
-        <TableCaption>A list of images avaialble locally on the host.</TableCaption>
+        <TableCaption>A list of images available locally on the host.</TableCaption>
         <TableHeader>
             <TableRow>
                 <TableHead className="w-[100px]">Id</TableHead>
@@ -82,7 +125,7 @@ function ImageList() {
             <TableCell className='font-medium'>{image.name}</TableCell>
             <TableCell>{image.version}</TableCell>
             <TableCell>
-            <Button variant="ghost" size="icon"><TrashIcon className="w-4 h-4 hover:text-red-500"/></Button>
+            <Button variant="ghost" size="icon" onClick={(e) => {imageAction(image.Id.split(":")[1].substring(0,12), `${image.name}:${image.version}`, "DELETE" )}}><TrashIcon className="w-4 h-4 hover:text-red-500"/></Button>
             </TableCell>
         </TableRow>
         )}
