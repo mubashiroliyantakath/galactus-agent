@@ -8,6 +8,7 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/gofiber/fiber/v2"
 	"github.com/mubashiroliyantakath/galactus-agent/internal/utils/logging"
+	"reflect"
 )
 
 func ContainerList(c *fiber.Ctx) error {
@@ -57,7 +58,7 @@ func ContainerActions(c *fiber.Ctx) error {
 	}
 
 	if !action.isValid() {
-		logging.Log.Error(fmt.Sprintf("Invalid action requested. Got: '%v'. Expected ['START','RESTART','STOP','DELETE']", action.Action))
+		logging.Log.Error(fmt.Sprintf("Invalid action requested. Got: '%v'. Expected %v", action.Action, reflect.ValueOf(containerActions).MapKeys()))
 		return fiber.ErrBadRequest
 	}
 
