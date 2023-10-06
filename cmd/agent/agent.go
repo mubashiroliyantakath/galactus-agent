@@ -33,7 +33,6 @@ func main() {
 	app = fiber.New()
 	app.Get("/api/v1/containers/list", controllers.ContainerList)
 	app.Get("/api/v1/images/list", controllers.ImageList)
-	app.Post("/api/v1/images/action", controllers.ImageActions)
 	app.Post("/api/v1/containers/action", controllers.ContainerActions)
 	go func() {
 		<-c
