@@ -11,9 +11,10 @@ import {
 import { useEffect,useState } from "react";
 import Loading from "@/app/dashboard/images/loading";
 import { Button } from "./ui/button";
-import { TrashIcon, ValueNoneIcon } from "@radix-ui/react-icons";
+import {CopyIcon, TrashIcon, ValueNoneIcon} from "@radix-ui/react-icons";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert"
 import {toast} from "sonner";
+import {copyId} from "@/lib/copyToClipboard";
 
 function transformImageList(imageList) {
     const transformedImageList = []
@@ -121,7 +122,10 @@ function ImageList() {
         <TableBody>
         {imageList.map((image, index) =>
         <TableRow key={index}>
-            <TableCell>{image.Id.split(":")[1].substring(0,12)}</TableCell>
+            <TableCell className="flex align-middle p-4 space-x-1">
+                <CopyIcon className="align-middle mt-0.5 hover:text-blue-600" onClick={(e) => copyId(image.Id.split(":")[1])}/>
+                <span  className="align-middle" >{image.Id.split(":")[1].substring(0,12)}</span>
+            </TableCell>
             <TableCell className='font-medium'>{image.name}</TableCell>
             <TableCell>{image.version}</TableCell>
             <TableCell>

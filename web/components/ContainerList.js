@@ -10,10 +10,11 @@ import {
 } from "@/components/ui/table"
 import { useEffect, useState } from "react"
 import Loading from "@/app/dashboard/containers/loading"
-import { StopIcon, PlayIcon, TrashIcon, ValueNoneIcon } from "@radix-ui/react-icons"
+import {StopIcon, PlayIcon, TrashIcon, ValueNoneIcon, CopyIcon} from "@radix-ui/react-icons"
 import { Button } from "./ui/button"
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert"
 import { toast } from "sonner";
+import {copyId} from "@/lib/copyToClipboard";
 
 // Renders a list of containers in table format
 function ContainerList () {
@@ -96,7 +97,10 @@ function ContainerList () {
         <TableBody>
         {containerList.map((container) =>
         <TableRow key={container.Id.substring(0,12)}>
-            <TableCell className='font-medium'>{container.Id.substring(0,12)}</TableCell>
+            <TableCell className='font-medium flex align-middle p-4 space-x-1'>
+                <CopyIcon className="align-middle mt-0.5 hover:text-blue-600" onClick={(e) => copyId(container.Id)}/>
+                <span  className="align-middle" >{container.Id.substring(0,12)}</span>
+            </TableCell>
             <TableCell>{container.Names[0].replace("/","")}</TableCell>
             <TableCell>{container.Image}</TableCell>
             <TableCell>{container.Status}</TableCell>
