@@ -1,11 +1,18 @@
 import {toast} from "sonner";
 
-const copyAction = (id) =>  navigator.clipboard.writeText(id)
 export const copyId = (id) => {
-    toast.promise(copyAction(id),{
+    toast.promise(new Promise((resolve,reject) => {
+        if (navigator.clipboard) {
+            resolve(navigator.clipboard.writeText(id))
+        } else {
+            reject("You are in an insecure context!")
+        }
+
+    }),{
         loading: 'Copying Id...',
         success: () => {
             return "Id copied to clipboard!"
-        }
+        },
+        error: (error) => { return `Error: ${error}`}
     })
 }
