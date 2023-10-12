@@ -3,17 +3,18 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"reflect"
+
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 	"github.com/gofiber/fiber/v2"
 	"github.com/mubashiroliyantakath/galactus-agent/internal/utils/logging"
-	"reflect"
 )
 
 func ContainerList(c *fiber.Ctx) error {
 	logging.Log.Debug("Getting Container list")
-	dockerClient, err := client.NewClientWithOpts(client.FromEnv)
+	dockerClient, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
 		logging.Log.Info("Error creating docker client")
 		return fiber.ErrInternalServerError
@@ -63,7 +64,7 @@ func ContainerActions(c *fiber.Ctx) error {
 	}
 
 	logging.Log.Debug(fmt.Sprintf("Action command received: %v container %v", action.Action, action.Id))
-	dockerClient, err := client.NewClientWithOpts(client.FromEnv)
+	dockerClient, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
 		logging.Log.Info("Error creating docker client")
 		return fiber.ErrInternalServerError
