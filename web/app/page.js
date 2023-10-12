@@ -16,7 +16,7 @@ import { GitHubLogoIcon } from "@radix-ui/react-icons";
 const roadmapItems = [
   {
     title: "Actions on Container and Images page",
-    description: "In Progress",
+    description: "Done",
 
   },
   {

@@ -13,7 +13,7 @@ import (
 
 func ImageList(c *fiber.Ctx) error {
 	logging.Log.Debug("Fetching Image List")
-	dockerClient, err := client.NewClientWithOpts(client.FromEnv)
+	dockerClient, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
 		logging.Log.Error("Error creating docker client")
 		return fiber.ErrInternalServerError
@@ -59,7 +59,7 @@ func ImageActions(c *fiber.Ctx) error {
 		return fiber.ErrBadRequest
 	}
 
-	dockerClient, err := client.NewClientWithOpts(client.FromEnv)
+	dockerClient, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
 		logging.Log.Error("Error creating docker client")
 		return fiber.ErrInternalServerError
