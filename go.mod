@@ -4,7 +4,7 @@ go 1.21.0
 
 require (
 	github.com/docker/docker v24.0.6+incompatible
-	github.com/gofiber/fiber/v2 v2.49.2
+	github.com/gofiber/fiber/v2 v2.50.0
 	github.com/spf13/viper v1.16.0
 	go.uber.org/zap v1.26.0
 )
