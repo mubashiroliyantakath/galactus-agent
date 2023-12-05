@@ -3,19 +3,18 @@ package controllers
 import (
 	"context"
 	"fmt"
-	"reflect"
-
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 	"github.com/gofiber/fiber/v2"
-	"github.com/mubashiroliyantakath/galactus-agent/internal/utils/logging"
+	log "github.com/sirupsen/logrus"
+	"reflect"
 )
 
 func ImageList(c *fiber.Ctx) error {
-	logging.Log.Debug("Fetching Image List")
+	log.Debug("Fetching Image List")
 	dockerClient, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
-		logging.Log.Error("Error creating docker client")
+		log.Error("Error creating docker client")
 		return fiber.ErrInternalServerError
 	}
 	defer dockerClient.Close()
@@ -25,7 +24,7 @@ func ImageList(c *fiber.Ctx) error {
 		return fiber.ErrInternalServerError
 	}
 
-	logging.Log.Debug(fmt.Sprintf("Image list fetched: %v", images))
+	log.Debug(fmt.Sprintf("Image list fetched: %v", images))
 	return c.JSON(images)
 
 }
@@ -45,23 +44,23 @@ func (c ImageActionPayload) isValid() bool {
 }
 
 func ImageActions(c *fiber.Ctx) error {
-	logging.Log.Debug("Performing an Image action")
-	logging.Log.Info(fmt.Sprintf("%v", imageActions))
+	log.Debug("Performing an Image action")
+	log.Info(fmt.Sprintf("%v", imageActions))
 	action := new(ImageActionPayload)
 
 	if err := c.BodyParser(action); err != nil {
-		logging.Log.Error(fmt.Sprintf("Error parsing request body: %v", err))
+		log.Error(fmt.Sprintf("Error parsing request body: %v", err))
 		return err
 	}
 
 	if !action.isValid() {
-		logging.Log.Error(fmt.Sprintf("Invalid action requested. Got: '%v'. Expected %v", action.Action, reflect.ValueOf(imageActions).MapKeys()))
+		log.Error(fmt.Sprintf("Invalid action requested. Got: '%v'. Expected %v", action.Action, reflect.ValueOf(imageActions).MapKeys()))
 		return fiber.ErrBadRequest
 	}
 
 	dockerClient, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
-		logging.Log.Error("Error creating docker client")
+		log.Error("Error creating docker client")
 		return fiber.ErrInternalServerError
 	}
 	defer dockerClient.Close()
@@ -69,7 +68,7 @@ func ImageActions(c *fiber.Ctx) error {
 	_, err = dockerClient.ImageRemove(context.Background(), action.Id, types.ImageRemoveOptions{})
 
 	if err != nil {
-		logging.Log.Error(fmt.Sprintf("Error deleting image %v", err))
+		log.Error(fmt.Sprintf("Error deleting image %v", err))
 		return fiber.ErrInternalServerError
 	}
 	return nil

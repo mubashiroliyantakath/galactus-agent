@@ -2,13 +2,12 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"os/signal"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/mubashiroliyantakath/galactus-agent/app/controllers"
 	"github.com/mubashiroliyantakath/galactus-agent/internal/utils/config"
-	"github.com/mubashiroliyantakath/galactus-agent/internal/utils/logging"
+	log "github.com/sirupsen/logrus"
+	"os"
+	"os/signal"
 )
 
 var (
@@ -16,12 +15,18 @@ var (
 )
 
 func init() {
-	logging.NewLogger()
-	logging.Log.Info("Initializing Galactus Agent")
-	logging.Log.Info("Reading Configs")
-	err := config.NewConfig()
+	log.SetFormatter(&log.TextFormatter{FullTimestamp: true})
+	log.SetOutput(os.Stdout)
+	logLevel, err := log.ParseLevel(os.Getenv("LOG_LEVEL"))
 	if err != nil {
-		logging.Log.Error(err.Error())
+		logLevel = log.InfoLevel
+	}
+	log.SetLevel(logLevel)
+	log.Info("Initializing Galactus Agent")
+	log.Info("Reading Configs")
+	err = config.NewConfig()
+	if err != nil {
+		log.Error(err.Error())
 		os.Exit(1)
 	}
 
@@ -37,7 +42,7 @@ func main() {
 	app.Post("/api/v1/containers/action", controllers.ContainerActions)
 	go func() {
 		<-c
-		logging.Log.Info("Received Ctrl + C. Gracefully shutting down the server.")
+		log.Info("Received Ctrl + C. Gracefully shutting down the server.")
 		err := app.Shutdown()
 		if err != nil {
 			return
@@ -46,7 +51,7 @@ func main() {
 	}()
 	err := app.Listen(fmt.Sprintf(":%d", config.AppConfig.Http.Port))
 	if err != nil {
-		logging.Log.Error(err.Error())
+		log.Error(err.Error())
 		os.Exit(1)
 	}
 
