@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
-import { JetBrains_Mono } from 'next/font/google'
+import {inter} from "@/components/ui/fonts";
 import './globals.css'
+import {ThemeProvider} from "@/components/theme-provider"
+import {ModeToggle} from "@/components/ui/dark-mode-button";
 
-const jetbrains = JetBrains_Mono({ subsets: ['latin'] })
+
 
 export const metadata: Metadata = {
   title: 'Galactus Agent Dashboard',
@@ -16,7 +18,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${jetbrains.className}`}>{children}</body>
+      <body className={`${inter.className}`}>
+      <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+      >
+      <div className={`absolute top-0 right-0 h-16 w-16 mt-4`}>
+          <ModeToggle/>
+      </div>
+      {children}
+      </ThemeProvider>
+      </body>
     </html>
   )
 }
