@@ -4,7 +4,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <div className={"flex flex-col"}>
             <NavBar/>
-            <div className={"w-full h-full p-5"}>
+            <div>
                 {children}
             </div>
         </div>

@@ -8,7 +8,7 @@ export default function Home() {
           <h1 className="scroll-m-20 text-4xl text-center font-extrabold mb-4">
             Galactus Agent Dashboard
           </h1>
-          <Button asChild className={`m-4`}>
+          <Button asChild className={`m-4 bg-green-700 font-bold hover:bg-green-600`}>
               <Link href={`/dashboard`}>Login</Link>
           </Button>
       </main>

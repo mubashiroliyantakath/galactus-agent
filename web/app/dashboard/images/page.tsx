@@ -1,5 +1,7 @@
 export default function Page() {
     return (
-        <p>Images</p>
+        <main className={'flex flex-col items-center justify-between px-10 pt-7'}>
+
+        </main>
     )
 }

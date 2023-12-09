@@ -1,11 +1,14 @@
-import {jetbrains} from "@/components/ui/fonts";
+import {inter} from "@/components/ui/fonts";
 import NavLinks from "@/components/ui/navlinks";
+import Link from "next/link";
 
 export default function NavBar() {
     return (
-        <div className={`${jetbrains.className} flex flex-col w-full m-4 pt-4 px-4 border-b`}>
-            <span className={"text-2xl antialiased font-bold"}>Galactus Agent Dashboard</span>
-            <div className={`flex flex-row mt-7`}>
+        <div className={`${inter.className} flex flex-col m-4 pt-4 px-4 border-b`}>
+            <Link href={`/dashboard`}>
+                <span className={"text-2xl ml-3 antialiased font-bold"}>Galactus Agent Dashboard</span>
+            </Link>
+            <div className={`flex flex-row mt-4`}>
                 <NavLinks/>
             </div>
         </div>
