@@ -3,6 +3,7 @@ import {inter} from "@/components/ui/fonts";
 import './globals.css'
 import {ThemeProvider} from "@/components/theme-provider"
 import {ModeToggle} from "@/components/ui/dark-mode-button";
+import {Toaster} from "sonner";
 
 
 
@@ -29,6 +30,7 @@ export default function RootLayout({
           <ModeToggle/>
       </div>
       {children}
+      <Toaster richColors/>
       </ThemeProvider>
       </body>
     </html>
