@@ -19,3 +19,18 @@ export async function fetchContainers() : Promise<Array<ContainerItem>> {
         throw new Error("API Error")
     }
 }
+
+export type ImageItem = {
+    Id: string,
+    RepoTags: Array<string>,
+}
+
+export async function fetchImages() : Promise<Array<ImageItem>> {
+    noStore()
+    try {
+        return await fetch(`${GALACTUS_AGENT_API}/api/v1/images/list`)
+            .then((res) => res.json())
+    } catch (error) {
+        throw new Error("API Error")
+    }
+}

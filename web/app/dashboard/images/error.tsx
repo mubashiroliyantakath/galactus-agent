@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import {Button} from "@/components/ui/button";
 import { toast} from "sonner";
 import {reloadContainersPage} from "@/lib/actions";
-import {useRouter} from "next/navigation";
 
 export default function Error({
                                   error,
@@ -18,13 +17,13 @@ export default function Error({
         console.error(error);
     }, [error]);
 
-    const router = useRouter()
-
     return (
         <main className="flex flex-col grow items-center justify-center">
             <h2 className="text-center mt-20">{`${error}`}</h2>
-            <Button className={`m-4 bg-white border-2 border-green-700 text-black font-bold hover:bg-green-600 pointer-events-none`}>
-                <p>Please try reloading the page.</p>
+            <Button asChild className={`m-4 bg-green-700 font-bold hover:bg-green-600`}>
+                <div onClick={() => {
+                    reset()
+                }}>Try Again</div>
             </Button>
         </main>
     );
