@@ -1,0 +1,5 @@
+
+
+const GALACTUS_AGENT_API = process.env.NEXT_PUBLIC_GALACTUS_AGENT_API
+
+export { GALACTUS_AGENT_API }
