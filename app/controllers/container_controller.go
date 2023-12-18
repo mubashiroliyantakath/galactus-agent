@@ -104,3 +104,49 @@ func ContainerActions(c *fiber.Ctx) error {
 
 	return nil
 }
+
+type ContainerCreatePayload struct {
+	ContainerName string   `json:"containerName,omitempty"`
+	Image         string   `json:"image"`
+	Env           []string `json:"env,omitempty"`
+}
+
+func ContainerCreate(c *fiber.Ctx) error {
+
+	containerCreate := new(ContainerCreatePayload)
+	if err := c.BodyParser(containerCreate); err != nil {
+		log.Error("Bad payload.")
+		return fiber.ErrBadRequest
+	}
+
+	dockerClient, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		log.Error("Cannot create docker client. Is the engine running?")
+		return fiber.ErrInternalServerError
+	}
+	defer dockerClient.Close()
+
+	log.Info("Creating container with image ", containerCreate.Image)
+	createResponse, err := dockerClient.ContainerCreate(
+		context.Background(),
+		&container.Config{
+			Image: containerCreate.Image,
+			Env:   containerCreate.Env,
+		},
+		nil,
+		nil,
+		nil,
+		containerCreate.ContainerName,
+	)
+	if err != nil {
+		log.Error("Cannot create the container. ", err)
+		return fiber.ErrNotFound
+	}
+
+	err = dockerClient.ContainerStart(context.Background(), createResponse.ID, types.ContainerStartOptions{})
+	if err != nil {
+		log.Error("Cannot start the container. ", err)
+		return fiber.ErrInternalServerError
+	}
+	return nil
+}
