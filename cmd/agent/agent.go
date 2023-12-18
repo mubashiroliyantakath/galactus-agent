@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/mubashiroliyantakath/galactus-agent/app/controllers"
 	"github.com/mubashiroliyantakath/galactus-agent/internal/utils/config"
 	log "github.com/sirupsen/logrus"
@@ -36,6 +37,14 @@ func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	app = fiber.New()
+
+	app.Use(cors.New(cors.Config{
+		AllowHeaders:     "Origin,Content-Type,Accept,Content-Length,Accept-Language,Accept-Encoding,Connection,Access-Control-Allow-Origin",
+		AllowOrigins:     "http://localhost:3000",
+		AllowCredentials: true,
+		AllowMethods:     "GET,POST,HEAD,PUT,DELETE,PATCH,OPTIONS",
+	}))
+
 	app.Get("/api/v1/containers/list", controllers.ContainerList)
 	app.Get("/api/v1/images/list", controllers.ImageList)
 	app.Post("/api/v1/images/action", controllers.ImageActions)
