@@ -17,8 +17,8 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-#    ports:
-#      - "7867:7867"
+    ports:
+      - "7867:7867"
         #  if using windows use the one below
       # - //var/run/docker.sock:/var/run/docker.sock
   agent-dashboard:
