@@ -26,7 +26,7 @@ services:
     container_name: dashboard
     restart: unless-stopped
     environment:
-      GALACTUS_AGENT_API: "http://agent:7867"
+      GALACTUS_AGENT_API: "http://<HOST_IP>:7867"
     ports:
       - "3000:3000"
 ```
