@@ -1,5 +1,6 @@
 import {unstable_noStore as noStore} from "next/cache";
 import {GALACTUS_AGENT_API} from "@/lib/constants";
+import {AppDefinition} from "@/lib/customtypes";
 
 
 export type ContainerItem = {
@@ -27,10 +28,32 @@ export type ImageItem = {
 
 export async function fetchImages() : Promise<Array<ImageItem>> {
     noStore()
-    try {
-        return await fetch(`${GALACTUS_AGENT_API}/api/v1/images/list`)
-            .then((res) => res.json())
-    } catch (error) {
-        throw new Error("API Error")
-    }
+
+    return await fetch(`${GALACTUS_AGENT_API}/api/v1/images/list`)
+        .then((res) => res.json())
+
+}
+
+
+export async function fetchTemplateList(): Promise<Array<AppDefinition>> {
+    noStore();
+
+    return await fetch(`${GALACTUS_AGENT_API}/api/v1/apps/templates/list`)
+        .then((res) => res.json())
+
+}
+
+type systemInfo = {
+    Containers: number
+    ContainersRunning: number
+    ContainersPaused: number
+    ContainersStopped: number
+    Images: number
+}
+
+export  async  function fetchSystemInfo(): Promise<systemInfo> {
+    noStore()
+
+    return await fetch(`${GALACTUS_AGENT_API}/api/v1/system/info`)
+        .then((res) => res.json())
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/client"
 	"github.com/gofiber/fiber/v2"
 	log "github.com/sirupsen/logrus"
@@ -102,5 +103,49 @@ func ContainerActions(c *fiber.Ctx) error {
 
 	}
 
+	return nil
+}
+
+type ContainerCreatePayload struct {
+	ContainerName    string                   `json:"containerName,omitempty"`
+	Config           container.Config         `json:"config"`
+	HostConfig       container.HostConfig     `json:"hostConfig,omitempty"`
+	NetworkingConfig network.NetworkingConfig `json:"networkingConfig,omitempty"`
+}
+
+func ContainerCreate(c *fiber.Ctx) error {
+
+	containerCreate := new(ContainerCreatePayload)
+	if err := c.BodyParser(containerCreate); err != nil {
+		log.Error("Bad payload.")
+		return fiber.ErrBadRequest
+	}
+
+	dockerClient, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		log.Error("Cannot create docker client. Is the engine running?")
+		return fiber.ErrInternalServerError
+	}
+	defer dockerClient.Close()
+
+	log.Info("Creating container with image ", containerCreate.Config.Image)
+	createResponse, err := dockerClient.ContainerCreate(
+		context.Background(),
+		&containerCreate.Config,
+		&containerCreate.HostConfig,
+		&containerCreate.NetworkingConfig,
+		nil,
+		containerCreate.ContainerName,
+	)
+	if err != nil {
+		log.Error("Cannot create the container. ", err)
+		return fiber.ErrNotFound
+	}
+
+	err = dockerClient.ContainerStart(context.Background(), createResponse.ID, types.ContainerStartOptions{})
+	if err != nil {
+		log.Error("Cannot start the container. ", err)
+		return fiber.ErrInternalServerError
+	}
 	return nil
 }

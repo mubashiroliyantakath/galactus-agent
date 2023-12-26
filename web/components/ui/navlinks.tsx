@@ -2,12 +2,13 @@
 import {usePathname} from "next/navigation";
 import Link from "next/link";
 import {clsx} from "clsx";
-import {ContainerIcon, Library, Package} from "lucide-react";
+import {ContainerIcon, Library, Package, RocketIcon} from "lucide-react";
 
 const links = [
     { name: "Overview", href: '/dashboard', icon: Library },
     { name: "Containers", href: '/dashboard/containers', icon: ContainerIcon },
-    { name: "Images", href: '/dashboard/images', icon: Package }
+    { name: "Images", href: '/dashboard/images', icon: Package },
+    { name: "Deploy", href: '/dashboard/deploy', icon: RocketIcon}
 ]
 
 export default function NavLinks() {
