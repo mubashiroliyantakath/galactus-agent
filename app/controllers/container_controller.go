@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/client"
 	"github.com/gofiber/fiber/v2"
 	log "github.com/sirupsen/logrus"
@@ -106,9 +107,10 @@ func ContainerActions(c *fiber.Ctx) error {
 }
 
 type ContainerCreatePayload struct {
-	ContainerName string   `json:"containerName,omitempty"`
-	Image         string   `json:"image"`
-	Env           []string `json:"env,omitempty"`
+	ContainerName    string                   `json:"containerName,omitempty"`
+	Config           container.Config         `json:"config"`
+	HostConfig       container.HostConfig     `json:"hostConfig,omitempty"`
+	NetworkingConfig network.NetworkingConfig `json:"networkingConfig,omitempty"`
 }
 
 func ContainerCreate(c *fiber.Ctx) error {
@@ -126,15 +128,12 @@ func ContainerCreate(c *fiber.Ctx) error {
 	}
 	defer dockerClient.Close()
 
-	log.Info("Creating container with image ", containerCreate.Image)
+	log.Info("Creating container with image ", containerCreate.Config.Image)
 	createResponse, err := dockerClient.ContainerCreate(
 		context.Background(),
-		&container.Config{
-			Image: containerCreate.Image,
-			Env:   containerCreate.Env,
-		},
-		nil,
-		nil,
+		&containerCreate.Config,
+		&containerCreate.HostConfig,
+		&containerCreate.NetworkingConfig,
 		nil,
 		containerCreate.ContainerName,
 	)
