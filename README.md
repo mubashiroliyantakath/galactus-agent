@@ -17,8 +17,8 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-#    ports:
-#      - "7867:7867"
+    ports:
+      - "7867:7867"
         #  if using windows use the one below
       # - //var/run/docker.sock:/var/run/docker.sock
   agent-dashboard:
@@ -26,7 +26,7 @@ services:
     container_name: dashboard
     restart: unless-stopped
     environment:
-      GALACTUS_AGENT_API: "http://agent:7867"
+      GALACTUS_AGENT_API: "http://<HOST_IP>:7867"
     ports:
       - "3000:3000"
 ```
