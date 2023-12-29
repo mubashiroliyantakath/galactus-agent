@@ -10,3 +10,8 @@ export interface AppDefinition {
     description: string,
     config: containerConfig
 }
+
+export interface  ContainerDefinition {
+    containerName: string,
+    config: containerConfig
+}

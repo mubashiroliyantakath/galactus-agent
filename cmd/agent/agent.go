@@ -57,6 +57,7 @@ func main() {
 	app.Post("/api/v1/containers/create", controllers.ContainerCreate)
 	app.Get("/api/v1/apps/templates/list", controllers.PredefinedAppTemplates)
 	app.Get("/api/v1/system/info", controllers.SystemInfo)
+	app.Post("/api/v1/images/search", controllers.ImageSearch)
 	go func() {
 		<-c
 		log.Info("Received Ctrl + C. Gracefully shutting down the server.")

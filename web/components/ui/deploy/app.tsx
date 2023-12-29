@@ -1,6 +1,7 @@
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import {fetchTemplateList} from "@/lib/data";
 import {AppDefinition} from "@/lib/customtypes";
+import {TemplateDialog} from "@/components/ui/deploy/template-dialog";
 
 export default async function App(template: AppDefinition) {
 
@@ -12,7 +13,7 @@ export default async function App(template: AppDefinition) {
                     <CardDescription>{template.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
-
+                    <TemplateDialog {...template} />
                 </CardContent>
             </Card>
 

@@ -45,7 +45,7 @@ export function ContainerListRow(container: ContainerItem) {
         <TableRow>
             <TableCell className="w-[100px]">{container.Id.substring(0, 12)}</TableCell>
             <TableCell className={`font-medium`}>{container.Names[0].replace("/","")}</TableCell>
-            <TableCell>{container.Image}</TableCell>
+            <TableCell className={`w-[30rem]`}>{container.Image}</TableCell>
             <TableCell className={`w-[30rem]`}>{container.Status}</TableCell>
             <TableCell className={`flex flex-row shrink absolute`}>
                 <div className={'flex flex-row shrink divide-x-0 text-white'}>
