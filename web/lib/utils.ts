@@ -38,4 +38,3 @@ export function transformImageList(imageList: ImageItem[]) {
   });
   return transformedImageList
 }
-

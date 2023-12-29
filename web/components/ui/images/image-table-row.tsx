@@ -1,40 +1,22 @@
 "use client"
-import {ImageItem} from "@/lib/data";
 import {TableCell, TableRow} from "@/components/ui/table";
 import {TransformedImageItem} from "@/lib/utils";
 import {Trash2} from "lucide-react";
-import {PUBLIC_GALACTUS_AGENT_API} from "@/lib/constants";
 import {toast} from "sonner";
-import {reloadContainersPage} from "@/lib/actions";
+import {imageActions, reloadContainersPage, reloadImagePage} from "@/lib/actions";
 
 
 async function imageAction(id: string) {
-    const payload = {
-        id: id,
-        action: "DELETE"
-    }
 
-    const requestOptions = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
+    const response = await imageActions(id)
+    if (response.success) {
+        toast.success(`Successfully deleted the image ${id}`)
+        reloadImagePage()
+    } else {
+        toast.error(response.error)
     }
-    fetch(`${PUBLIC_GALACTUS_AGENT_API}/api/v1/images/action`, requestOptions)
-        .then((response) => {
-            if(!response.ok) {
-                toast.error(`Failed to delete the image ${id}. Please check if it is in use.`)
-            } else {
-                toast.success(`Successfully deleted image ${id}`)
-                reloadContainersPage()
-            }
-        })
-        .catch((error) => {
-            toast.error(`Backend API Unreachable`)
-        })
-
 }
+
 export async function ImageListRow(image: TransformedImageItem) {
     return (
         <TableRow>

@@ -2,27 +2,31 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
+import {Form, FormControl, FormField, FormItem, FormMessage} from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {AppDefinition, ContainerDefinition} from "@/lib/customtypes";
 import {
+    DownloadIcon,
     FileWarningIcon,
     PackageIcon,
     RocketIcon,
-    RotateCcw,
     ServerCrash,
     ThumbsDownIcon,
     ThumbsUpIcon
 } from "lucide-react";
-import {useState} from "react";
-import {GALACTUS_AGENT_API} from "@/lib/constants";
+import React, {useState} from "react";
 import {toast} from "sonner";
 import {Textarea} from "@/components/ui/textarea";
 import {CheckButton} from "@/components/ui/deploy/check-image-button";
 import {useRouter} from "next/navigation";
-import {revalidatePath} from "next/cache";
-import {reloadContainersPage} from "@/lib/actions";
+import {createContainer, reloadContainersPage, ServerResponse} from "@/lib/actions";
+import Link from "next/link";
+import {checkImage} from "@/lib/actions";
+
+
+
+
 
 enum checkButtonStateEnum {
     default = "default",
@@ -31,6 +35,7 @@ enum checkButtonStateEnum {
     found = "found",
     error = "error"
 }
+
 
 const checkButtonIcons = {
     default: <PackageIcon className={`animate-pulse`} />,
@@ -54,11 +59,11 @@ const formSchema = z.object({
 
 })
 export function TemplateForm(template: AppDefinition) {
-    // 1. Define your form.
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             containerName: "",
+            imageName: template.config.Image ? template.config.Image : "",
             environmentVariables: template.config.Env?.join('\n')
         },
     })
@@ -74,7 +79,6 @@ export function TemplateForm(template: AppDefinition) {
                 Env: envVariableList
             }
         }
-        console.log(containerDefinition)
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -82,47 +86,36 @@ export function TemplateForm(template: AppDefinition) {
             },
             body: JSON.stringify(containerDefinition)
         }
-        fetch(`${GALACTUS_AGENT_API}/api/v1/containers/create`, requestOptions)
-            .then((response) => {
-                if (response.ok) {
+        createContainer(containerDefinition)
+            .then((response: ServerResponse) => {
+                if (response.success) {
                     toast.success("Successfully created container")
                     reloadContainersPage()
                     replace("/dashboard/containers")
-
+                } else {
+                    toast.error(`Error: ${response.error}`)
                 }
             })
             .catch((error) => {
-                toast.error("Error: ", error)
+                toast.error(`Error: ${error}`)
             })
     }
 
-    const [imageValue, setImageValue] = useState('')
+    const [imageValue, setImageValue] = useState(template.config.Image ? template.config.Image : "")
     const [deployEnabled, setDeployEnabled] = useState(false)
     const [checkButtonState, setCheckButtonStatus] = useState(checkButtonStateEnum.default)
     const {replace} = useRouter()
     const handleCheck = async (image: string) => {
-        const payload = {
-            image: image.trim()
-        }
-
-        const requestOptions = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        }
-        fetch(`${GALACTUS_AGENT_API}/api/v1/images/search`, requestOptions)
+        checkImage(image.trim())
             .then((response) => {
-                if (response.ok ) {
+                if (response.status === 200 ) {
                     setDeployEnabled(true)
                     setCheckButtonStatus(checkButtonStateEnum.found)
-                    console.log(payload)
                     toast.success("Image exists")
                 } else if (response.status === 404) {
                     setDeployEnabled(false)
                     setCheckButtonStatus(checkButtonStateEnum.not_found)
-                    toast.error("Image doesn't exist")
+                    toast.error("Image doesn't exist. Try Downloading.")
                 } else if (response.status === 400) {
                     setDeployEnabled(false)
                     setCheckButtonStatus(checkButtonStateEnum.bad_payload)
@@ -133,7 +126,21 @@ export function TemplateForm(template: AppDefinition) {
                     toast.error("Server Error")
                 }
             })
+            .catch((error) => {
+                setDeployEnabled(false)
+                setCheckButtonStatus(checkButtonStateEnum.error)
+                toast.error("Server Error")
+            })
 
+    }
+
+    const pullImageButton = () => {
+        return (
+            <Button className={`mt-5`} variant={"outline"}>
+                <DownloadIcon className={`mr-2`}/>
+                Get {imageValue}
+            </Button>
+        )
     }
 
     return (
@@ -174,6 +181,7 @@ export function TemplateForm(template: AppDefinition) {
 
                                         {checkButtonText[checkButtonState]}
                                     </CheckButton>
+
                                 </div>
 
                             </FormControl>
@@ -181,6 +189,20 @@ export function TemplateForm(template: AppDefinition) {
                         </FormItem>
                     )}
                 />
+                {
+                    checkButtonState === checkButtonStateEnum.not_found ?
+                    <Link href={`/dashboard/images/pull?image=${imageValue}`}>
+                        <Button className={`mt-5`} variant={"outline"}>
+                            <DownloadIcon className={`mr-2`}/>
+                            Get {imageValue}
+                        </Button>
+                    </Link>
+
+
+                    :
+                    <></>
+                }
+
                 <p className={`flex flex-col space-y-1.5 text-center sm:text-left font-bold`}>Environment
                     Variables</p>
                 <FormField
