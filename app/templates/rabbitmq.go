@@ -7,11 +7,15 @@ import (
 )
 
 var (
-	Nginx = models.AppDefinition{
-		Name:        "Nginx",
-		Description: "Template to deploy nginx containers.",
+	RabbitMQ = models.AppDefinition{
+		Name:        "RabbitMQ",
+		Description: "Template to deploy RabbitMQ server.",
 		Config: container.Config{
-			Image: "nginx:alpine",
+			Image: "rabbitmq:3.11.6-management-alpine",
+			Env: []string{
+				"RABBITMQ_DEFAULT_USER=guest",
+				"RABBITMQ_DEFAULT_PASS=guest",
+			},
 		},
 		HostConfig:       container.HostConfig{},
 		NetworkingConfig: network.NetworkingConfig{},

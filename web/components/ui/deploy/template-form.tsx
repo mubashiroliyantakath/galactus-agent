@@ -23,6 +23,8 @@ import {CheckButton} from "@/components/ui/deploy/check-image-button";
 import {useRouter} from "next/navigation";
 import {revalidatePath} from "next/cache";
 import {reloadContainersPage} from "@/lib/actions";
+import {Simulate} from "react-dom/test-utils";
+import error = Simulate.error;
 
 enum checkButtonStateEnum {
     default = "default",
@@ -59,6 +61,7 @@ export function TemplateForm(template: AppDefinition) {
         resolver: zodResolver(formSchema),
         defaultValues: {
             containerName: "",
+            imageName: template.config.Image ? template.config.Image : "",
             environmentVariables: template.config.Env?.join('\n')
         },
     })
@@ -74,7 +77,6 @@ export function TemplateForm(template: AppDefinition) {
                 Env: envVariableList
             }
         }
-        console.log(containerDefinition)
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -96,7 +98,7 @@ export function TemplateForm(template: AppDefinition) {
             })
     }
 
-    const [imageValue, setImageValue] = useState('')
+    const [imageValue, setImageValue] = useState(template.config.Image ? template.config.Image : "")
     const [deployEnabled, setDeployEnabled] = useState(false)
     const [checkButtonState, setCheckButtonStatus] = useState(checkButtonStateEnum.default)
     const {replace} = useRouter()
@@ -104,7 +106,6 @@ export function TemplateForm(template: AppDefinition) {
         const payload = {
             image: image.trim()
         }
-
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -117,7 +118,6 @@ export function TemplateForm(template: AppDefinition) {
                 if (response.ok ) {
                     setDeployEnabled(true)
                     setCheckButtonStatus(checkButtonStateEnum.found)
-                    console.log(payload)
                     toast.success("Image exists")
                 } else if (response.status === 404) {
                     setDeployEnabled(false)
@@ -132,6 +132,11 @@ export function TemplateForm(template: AppDefinition) {
                     setCheckButtonStatus(checkButtonStateEnum.error)
                     toast.error("Server Error")
                 }
+            })
+            .catch((error) => {
+                setDeployEnabled(false)
+                setCheckButtonStatus(checkButtonStateEnum.error)
+                toast.error("Server Error")
             })
 
     }
