@@ -7,6 +7,7 @@ import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {AppDefinition, ContainerDefinition} from "@/lib/customtypes";
 import {
+    DownloadIcon,
     FileWarningIcon,
     PackageIcon,
     RocketIcon,
@@ -15,7 +16,7 @@ import {
     ThumbsDownIcon,
     ThumbsUpIcon
 } from "lucide-react";
-import {useState} from "react";
+import React, {useState} from "react";
 import {GALACTUS_AGENT_API} from "@/lib/constants";
 import {toast} from "sonner";
 import {Textarea} from "@/components/ui/textarea";
@@ -25,6 +26,11 @@ import {revalidatePath} from "next/cache";
 import {reloadContainersPage} from "@/lib/actions";
 import {Simulate} from "react-dom/test-utils";
 import error = Simulate.error;
+import {DownloadImageDrawer} from "@/components/ui/deploy/download-image-drawer";
+
+
+
+
 
 enum checkButtonStateEnum {
     default = "default",
@@ -33,6 +39,7 @@ enum checkButtonStateEnum {
     found = "found",
     error = "error"
 }
+
 
 const checkButtonIcons = {
     default: <PackageIcon className={`animate-pulse`} />,
@@ -122,7 +129,7 @@ export function TemplateForm(template: AppDefinition) {
                 } else if (response.status === 404) {
                     setDeployEnabled(false)
                     setCheckButtonStatus(checkButtonStateEnum.not_found)
-                    toast.error("Image doesn't exist")
+                    toast.error("Image doesn't exist. Try Downloading.")
                 } else if (response.status === 400) {
                     setDeployEnabled(false)
                     setCheckButtonStatus(checkButtonStateEnum.bad_payload)
@@ -139,6 +146,15 @@ export function TemplateForm(template: AppDefinition) {
                 toast.error("Server Error")
             })
 
+    }
+
+    const pullImageButton = () => {
+        return (
+            <Button className={`mt-5`} variant={"outline"}>
+                <DownloadIcon className={`mr-2`}/>
+                Get {imageValue}
+            </Button>
+        )
     }
 
     return (
@@ -179,6 +195,7 @@ export function TemplateForm(template: AppDefinition) {
 
                                         {checkButtonText[checkButtonState]}
                                     </CheckButton>
+
                                 </div>
 
                             </FormControl>
@@ -186,6 +203,15 @@ export function TemplateForm(template: AppDefinition) {
                         </FormItem>
                     )}
                 />
+                {
+                    checkButtonState === checkButtonStateEnum.not_found ?
+
+                    <DownloadImageDrawer trigger={pullImageButton()} image={imageValue }/>
+
+                    :
+                    <></>
+                }
+
                 <p className={`flex flex-col space-y-1.5 text-center sm:text-left font-bold`}>Environment
                     Variables</p>
                 <FormField

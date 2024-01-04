@@ -30,7 +30,7 @@ export default function RootLayout({
           <ModeToggle/>
       </div>
       {children}
-      <Toaster richColors/>
+      <Toaster richColors position={"bottom-center"}/>
       </ThemeProvider>
       </body>
     </html>

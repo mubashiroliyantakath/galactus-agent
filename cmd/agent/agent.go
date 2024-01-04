@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/mubashiroliyantakath/galactus-agent/app/controllers"
@@ -50,6 +51,14 @@ func main() {
 		AllowMethods:     "GET,POST,HEAD,PUT,DELETE,PATCH,OPTIONS",
 	}))
 
+	app.Use("/ws/pull", func(c *fiber.Ctx) error {
+		if websocket.IsWebSocketUpgrade(c) {
+			c.Locals("allowed", true)
+			return c.Next()
+		}
+		return fiber.ErrUpgradeRequired
+	})
+
 	app.Get("/api/v1/containers/list", controllers.ContainerList)
 	app.Get("/api/v1/images/list", controllers.ImageList)
 	app.Post("/api/v1/images/action", controllers.ImageActions)
@@ -58,6 +67,9 @@ func main() {
 	app.Get("/api/v1/apps/templates/list", controllers.PredefinedAppTemplates)
 	app.Get("/api/v1/system/info", controllers.SystemInfo)
 	app.Post("/api/v1/images/search", controllers.ImageSearch)
+
+	app.Get("/ws/pull", websocket.New(controllers.ImagePullWS))
+
 	go func() {
 		<-c
 		log.Info("Received Ctrl + C. Gracefully shutting down the server.")
