@@ -3,10 +3,7 @@ import {TableCell, TableRow} from "@/components/ui/table";
 import {ContainerItem} from "@/lib/data";
 import { Play, RotateCw, Square, Trash2} from "lucide-react";
 import { reloadContainersPage} from "@/lib/actions";
-import {revalidatePath} from "next/cache";
-import {PUBLIC_GALACTUS_AGENT_API} from "@/lib/constants";
 import {toast} from "sonner";
-import Error from "@/app/dashboard/containers/error"
 
 
 type ContainerActions = "START" | "RESTART" | "STOP" | "DELETE"
@@ -25,7 +22,7 @@ async function ContainerAction(id: string, name: string, action: ContainerAction
         },
         body: JSON.stringify(payload)
     }
-    fetch(`${PUBLIC_GALACTUS_AGENT_API}/api/v1/containers/action`, requestOptions)
+    fetch(`${process.env.NEXT_PUBLIC_GALACTUS_AGENT_API}/api/v1/containers/action`, requestOptions)
         .then((response) => {
             if(!response.ok) {
                 toast.error(`Failed to ${action} the container ${name}`)

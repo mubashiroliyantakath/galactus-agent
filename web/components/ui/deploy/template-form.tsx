@@ -2,7 +2,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
+import {Form, FormControl, FormField, FormItem, FormMessage} from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {AppDefinition, ContainerDefinition} from "@/lib/customtypes";
@@ -11,22 +11,18 @@ import {
     FileWarningIcon,
     PackageIcon,
     RocketIcon,
-    RotateCcw,
     ServerCrash,
     ThumbsDownIcon,
     ThumbsUpIcon
 } from "lucide-react";
 import React, {useState} from "react";
-import {GALACTUS_AGENT_API} from "@/lib/constants";
 import {toast} from "sonner";
 import {Textarea} from "@/components/ui/textarea";
 import {CheckButton} from "@/components/ui/deploy/check-image-button";
 import {useRouter} from "next/navigation";
-import {revalidatePath} from "next/cache";
 import {reloadContainersPage} from "@/lib/actions";
-import {Simulate} from "react-dom/test-utils";
-import error = Simulate.error;
-import {DownloadImageDrawer} from "@/components/ui/deploy/download-image-drawer";
+import Link from "next/link";
+
 
 
 
@@ -63,7 +59,6 @@ const formSchema = z.object({
 
 })
 export function TemplateForm(template: AppDefinition) {
-    // 1. Define your form.
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -91,7 +86,7 @@ export function TemplateForm(template: AppDefinition) {
             },
             body: JSON.stringify(containerDefinition)
         }
-        fetch(`${GALACTUS_AGENT_API}/api/v1/containers/create`, requestOptions)
+        fetch(`${process.env.NEXT_PUBLIC_GALACTUS_AGENT_API}/api/v1/containers/create`, requestOptions)
             .then((response) => {
                 if (response.ok) {
                     toast.success("Successfully created container")
@@ -120,7 +115,7 @@ export function TemplateForm(template: AppDefinition) {
             },
             body: JSON.stringify(payload)
         }
-        fetch(`${GALACTUS_AGENT_API}/api/v1/images/search`, requestOptions)
+        fetch(`${process.env.NEXT_PUBLIC_GALACTUS_AGENT_API}/api/v1/images/search`, requestOptions)
             .then((response) => {
                 if (response.ok ) {
                     setDeployEnabled(true)
@@ -205,8 +200,13 @@ export function TemplateForm(template: AppDefinition) {
                 />
                 {
                     checkButtonState === checkButtonStateEnum.not_found ?
+                    <Link href={`/dashboard/images/pull?image=${imageValue}`}>
+                        <Button className={`mt-5`} variant={"outline"}>
+                            <DownloadIcon className={`mr-2`}/>
+                            Get {imageValue}
+                        </Button>
+                    </Link>
 
-                    <DownloadImageDrawer trigger={pullImageButton()} image={imageValue }/>
 
                     :
                     <></>

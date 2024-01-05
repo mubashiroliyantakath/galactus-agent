@@ -1,9 +1,7 @@
 "use client"
-import {ImageItem} from "@/lib/data";
 import {TableCell, TableRow} from "@/components/ui/table";
 import {TransformedImageItem} from "@/lib/utils";
 import {Trash2} from "lucide-react";
-import {PUBLIC_GALACTUS_AGENT_API} from "@/lib/constants";
 import {toast} from "sonner";
 import {reloadContainersPage} from "@/lib/actions";
 
@@ -21,7 +19,7 @@ async function imageAction(id: string) {
         },
         body: JSON.stringify(payload)
     }
-    fetch(`${PUBLIC_GALACTUS_AGENT_API}/api/v1/images/action`, requestOptions)
+    fetch(`${process.env.NEXT_PUBLIC_GALACTUS_AGENT_API}/api/v1/images/action`, requestOptions)
         .then((response) => {
             if(!response.ok) {
                 toast.error(`Failed to delete the image ${id}. Please check if it is in use.`)

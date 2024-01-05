@@ -190,7 +190,6 @@ func ImagePullWS(c *websocket.Conn) {
 			}
 			panic(err)
 		}
-		log.Info(fmt.Sprintf("%v+", event))
 
 		if err = c.WriteJSON(event); err != nil {
 			log.Error("Writing error: ", err)

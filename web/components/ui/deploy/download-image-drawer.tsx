@@ -21,16 +21,8 @@ type DownloadImageProps = {
 }
 export function DownloadImageDrawer(data: DownloadImageProps) {
     const [imageValue, setImageValue] = useState(data.image ? data.image : "")
-    const [startDownload, setStartDownload] = useState(false)
     const [status, setStatus] = useState("Image Not available")
-    // // const [ws, setWS] = useState(new WebSocket())
-    //
-    // useEffect(()=>  {
-    //     const newWS = new WebSocket(`ws://localhost:7867/ws/pull?image=${data.image}`)
-    //     newWS.onerror = err => console.error(err)
-    //     // newWS.onopen = () => setWS(newWS)
-    //     newWS.onmessage = msg => setStatus(JSON.parse(msg.data))
-    // })
+
 
     const handleDownload = () => {
         console.log(imageValue)
