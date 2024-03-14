@@ -13,6 +13,7 @@ var (
 		Config: container.Config{
 			Hostname: "test",
 			Env:      []string{"POSTGRES_USER=postgres", "POSTGRES_PASSWORD=postgres"},
+			Image:    "postgres:15-alpine",
 		},
 		HostConfig:       container.HostConfig{},
 		NetworkingConfig: network.NetworkingConfig{},

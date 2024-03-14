@@ -2,41 +2,21 @@
 import {TableCell, TableRow} from "@/components/ui/table";
 import {ContainerItem} from "@/lib/data";
 import { Play, RotateCw, Square, Trash2} from "lucide-react";
-import { reloadContainersPage} from "@/lib/actions";
-import {revalidatePath} from "next/cache";
-import {PUBLIC_GALACTUS_AGENT_API} from "@/lib/constants";
+import {containerAction, reloadContainersPage} from "@/lib/actions";
 import {toast} from "sonner";
-import Error from "@/app/dashboard/containers/error"
-
+import {ServerResponse} from "@/lib/actions";
 
 type ContainerActions = "START" | "RESTART" | "STOP" | "DELETE"
 
 async function ContainerAction(id: string, name: string, action: ContainerActions) {
 
-    const payload = {
-        id: id,
-        action: action
+    const response = await containerAction(id, action)
+    if (response.success) {
+        toast.success(`Successfully performed ${action} on the container ${name}`)
+        reloadContainersPage()
+    } else {
+        toast.error(response.error)
     }
-
-    const requestOptions = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-    }
-    fetch(`${PUBLIC_GALACTUS_AGENT_API}/api/v1/containers/action`, requestOptions)
-        .then((response) => {
-            if(!response.ok) {
-                toast.error(`Failed to ${action} the container ${name}`)
-            } else {
-                toast.success(`Successfully performed ${action} on the container ${name}`)
-                reloadContainersPage()
-            }
-        })
-        .catch((error) => {
-            toast.error(`Backend API Unreachable`)
-        })
 
 }
 export function ContainerListRow(container: ContainerItem) {

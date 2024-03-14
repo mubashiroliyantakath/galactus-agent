@@ -9,8 +9,8 @@ const buttonVariants = cva(
     {
         variants: {
             variant: {
-                default: "bg-blue-700 hover:bg-blue-600 ",
-                not_found: "bg-yellow-700 hover:bg-yellow-600",
+                default: "bg-blue-700 hover:bg-blue-600 check-image-button.tsx",
+                not_found: "border-solid border-2 border-red-700 text-black pointer-events-none",
                 found: "bg-green-700 hover:bg-green-600 pointer-events-none",
                 bad_payload: "bg-red-700 hover:bg-red-600",
                 error: "bg-red-700 hover:bg-red-600"
