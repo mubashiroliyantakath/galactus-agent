@@ -3,7 +3,8 @@ module github.com/mubashiroliyantakath/galactus-agent
 go 1.21.0
 
 require (
-	github.com/docker/docker v24.0.7+incompatible
+	github.com/docker/docker v24.0.9+incompatible
+	github.com/gofiber/contrib/websocket v1.3.0
 	github.com/gofiber/fiber/v2 v2.51.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.16.0
@@ -17,7 +18,6 @@ require (
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/fasthttp/websocket v1.5.7 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
-	github.com/gofiber/contrib/websocket v1.3.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/google/uuid v1.5.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
