@@ -5,7 +5,7 @@ go 1.21.0
 require (
 	github.com/docker/docker v24.0.9+incompatible
 	github.com/gofiber/contrib/websocket v1.3.0
-	github.com/gofiber/fiber/v2 v2.51.0
+	github.com/gofiber/fiber/v2 v2.52.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.16.0
 )
